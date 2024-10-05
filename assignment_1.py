@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[55]:
+# In[66]:
 
 
 # File name friendly
@@ -40,7 +40,7 @@ def slugify(value, allow_unicode=False):
 
 # ## Boilerplate start - you can mostly ignore this!
 
-# In[56]:
+# In[67]:
 
 
 import os
@@ -84,7 +84,7 @@ def seed_everything(seed: int):
 seed_everything(sum([115, 107, 105, 98, 105, 100, 105, 32, 116, 111, 105, 108, 101, 116]))
 
 
-# In[57]:
+# In[68]:
 
 
 # Specify dataset you wanna use
@@ -223,14 +223,14 @@ def collate_fn(batch):
 # 
 # 
 # 
-# **1. Implement the layer structure of VGG16-D by following either this [Medium article](https://medium.com/@mygreatlearning/everything-you-need-to-know-about-vgg16-7315defb5918) (fairly easy), or the [official paper](https://arxiv.org/pdf/1409.1556) (slightly harder) (Note: This layer structure is meant to be used with 224x224 sized images, only the  imagenette dataset in this notebook has this)**
+# X **1. Implement the layer structure of VGG16-D by following either this [Medium article](https://medium.com/@mygreatlearning/everything-you-need-to-know-about-vgg16-7315defb5918) (fairly easy), or the [official paper](https://arxiv.org/pdf/1409.1556) (slightly harder) (Note: This layer structure is meant to be used with 224x224 sized images, only the  imagenette dataset in this notebook has this)**
 # 
-# ****2. Figure out, and implement the type, and exact settings of the optimizer the original VGG16-D implementation used**  
+# X ****2. Figure out, and implement the type, and exact settings of the optimizer the original VGG16-D implementation used**  
 # - Batch size: $256$
-# - Momentum: $0.9$
-# - $L_2$ Penalty Multiplier: $5\times 10^{-4}$
+# - **Momentum: $0.9$**
+# - **$L_2$ Penalty Multiplier: $5\times 10^{-4}$**
 # - Dropout ratio: $0.5$
-# - Learning rate: $10^{-2}$, but decreased by a factor of 10, everytime the validation set accuracy stopped improving (done 3 times in the report).
+# - **Learning rate: $10^{-2}$, but decreased by a factor of 10 everytime the validation set accuracy stopped improving (done 3 times in the original VGG16).**
 # - Epochs: 74
 # 
 # 
@@ -254,7 +254,7 @@ def collate_fn(batch):
 # 
 # **6. During evaluation, extract some images which were not correctly classified, plot these images and reason about what made them hard-to-classify**
 
-# In[58]:
+# In[69]:
 
 
 # Get data
@@ -268,7 +268,7 @@ validation_dataloader = torch.utils.data.DataLoader(validation_set, batch_size=b
 test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 
 
-# In[59]:
+# In[70]:
 
 
 class VGG16D(torch.nn.Module):
@@ -281,8 +281,8 @@ class VGG16D(torch.nn.Module):
         conv_kernel = 3
         pool_kernel = 2
         dropout_probs = 0.5
-        #optim_momentum = ...
-        #weight_decay = ...
+        optim_momentum = 0.9
+        weight_decay = 5*10**(-4)
         learning_rate = 0.01 # Initially set to 0.01 but then set to 0.001 and then 0.0001
 
         # Define features and classifier each individually, this is how the VGG16-D model is originally defined
@@ -347,8 +347,13 @@ class VGG16D(torch.nn.Module):
         self.criterion = nn.CrossEntropyLoss()
 
         # Optimizer - For now just set to Adam to test the implementation
-        self.optim = torch.optim.Adam(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate)
-        # self.optim = torch.optim.SGD(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate, momentum=optim_momentum, weight_decay=weight_decay)
+        # self.optim = torch.optim.Adam(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate)
+        self.optim = torch.optim.SGD(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate, momentum=optim_momentum, weight_decay=weight_decay)
+
+        # Learning rate scheduler for improved convergence
+        # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size=10, gamma=0.1)
+        # Use a scheduler like VGG16
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optim, mode='max', factor=0.1, patience=5, verbose=True)
 
         self.dataset = dataset
 
@@ -432,7 +437,7 @@ class VGG16D(torch.nn.Module):
         return classifications, labels, images
 
 
-# In[60]:
+# In[71]:
 
 
 class VGG16S(torch.nn.Module):
@@ -557,7 +562,7 @@ class VGG16S(torch.nn.Module):
         return classifications, labels, images
 
 
-# In[61]:
+# In[72]:
 
 
 # Pre-trained model
@@ -588,7 +593,7 @@ def get_vgg_weights(model):
     return model
 
 
-# In[62]:
+# In[73]:
 
 
 # in_channels = next(iter(train_dataloader))[0].shape[1]
@@ -607,7 +612,7 @@ def get_vgg_weights(model):
 
 
 
-# In[63]:
+# In[ ]:
 
 
 # in_channels = next(iter(train_dataloader))[0].shape[1]
