@@ -1,6 +1,30 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[55]:
+
+
+# File name friendly
+import unicodedata
+import re
+
+def slugify(value, allow_unicode=False):
+    """
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '-', value).strip('-_')
+
+
 # # Assignment 1 - CNN's and VGG16
 # 
 # *In this assingment, you will further familiraize yourself with CNN's and how to implement them. For this particular example, we will ask you to implement the layer structure of VGG16, an old but fairly effective and simple CNN structure.*
@@ -16,7 +40,7 @@
 
 # ## Boilerplate start - you can mostly ignore this!
 
-# In[1]:
+# In[56]:
 
 
 import os
@@ -36,6 +60,7 @@ from tqdm import tqdm
 from torchsummary import summary
 
 import utils
+from datetime import datetime
 
 # Check if you have cuda available, and use if you do
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -59,7 +84,7 @@ def seed_everything(seed: int):
 seed_everything(sum([115, 107, 105, 98, 105, 100, 105, 32, 116, 111, 105, 108, 101, 116]))
 
 
-# In[2]:
+# In[57]:
 
 
 # Specify dataset you wanna use
@@ -229,7 +254,7 @@ def collate_fn(batch):
 # 
 # **6. During evaluation, extract some images which were not correctly classified, plot these images and reason about what made them hard-to-classify**
 
-# In[3]:
+# In[58]:
 
 
 # Get data
@@ -237,13 +262,13 @@ dataset_name = 'imagenette'
 train_set, validation_set, test_set = get_dataset(dataset_name, validation_size=0.1)
 
 # Make dataloaders
-batch_size=256 # Dramatically increases training time
+batch_size=1 # Dramatically increases training time
 train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 validation_dataloader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 
 
-# In[4]:
+# In[59]:
 
 
 class VGG16D(torch.nn.Module):
@@ -407,11 +432,11 @@ class VGG16D(torch.nn.Module):
         return classifications, labels, images
 
 
-# In[5]:
+# In[60]:
 
 
 class VGG16S(torch.nn.Module):
-    def __init__(self, num_classes, in_channels=1, features_fore_linear=25088, dataset=None):
+    def __init__(self, num_classes, in_channels=1, features_fore_linear=512*7*7, dataset=None):
         super().__init__()
         
         # Helper hyperparameters to keep track of VGG16 architecture
@@ -532,7 +557,7 @@ class VGG16S(torch.nn.Module):
         return classifications, labels, images
 
 
-# In[6]:
+# In[61]:
 
 
 # Pre-trained model
@@ -563,7 +588,7 @@ def get_vgg_weights(model):
     return model
 
 
-# In[7]:
+# In[62]:
 
 
 # in_channels = next(iter(train_dataloader))[0].shape[1]
@@ -582,7 +607,7 @@ def get_vgg_weights(model):
 
 
 
-# In[8]:
+# In[63]:
 
 
 # in_channels = next(iter(train_dataloader))[0].shape[1]
@@ -594,13 +619,14 @@ def get_vgg_weights(model):
 # features_fore_linear = utils.get_dim_before_first_linear(CNN_model.features, in_width_height, in_channels, brain=True)
 
 # Now make true model when we know how many features we have before the first linear layer
-CNN_model = VGG16D(num_classes=10, in_channels=3, features_fore_linear=512*7*7, dataset=test_set) 
+CNN_model = VGG16D(num_classes=10, in_channels=3, features_fore_linear=512*7*7, dataset=test_set)
+# CNN_model = VGG16S(num_classes=10, in_channels=3, features_fore_linear=193600, dataset=test_set)
 
 train_epochs = 5
 train_accs, test_accs = CNN_model.train_model(train_dataloader, epochs=train_epochs,  val_dataloader=test_dataloader)
 
 
-# In[ ]:
+# In[45]:
 
 
 # plot train and test accuracies
@@ -611,5 +637,13 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.title('Train and Test Accuracy over epochs, CNN model')
 plt.legend()
-plt.show()
+now = datetime.now()
+filename = "models/" + slugify(f'{now.date()}_{now.hour}-{now.minute}-{now.second}')
+plt.savefig(filename+'.pdf')
+
+
+# In[ ]:
+
+
+torch.save(CNN_model.state_dict(), filename+'.pt')
 
