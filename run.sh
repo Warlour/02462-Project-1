@@ -31,4 +31,5 @@ nvidia-smi
 # Load the cuda module
 module load cuda/12.4.1
 
-/appl/cuda/12.4.1/samples/bin/x86_64/linux/release/deviceQuery
+# /appl/cuda/12.4.1/samples/bin/x86_64/linux/release/deviceQuery
+/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/assignment_1.py
