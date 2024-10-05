@@ -262,7 +262,7 @@ dataset_name = 'imagenette'
 train_set, validation_set, test_set = get_dataset(dataset_name, validation_size=0.1)
 
 # Make dataloaders
-batch_size=1 # Dramatically increases training time
+batch_size=256 # Dramatically increases training time
 train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 validation_dataloader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
