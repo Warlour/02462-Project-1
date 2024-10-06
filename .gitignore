@@ -1,9 +1,7 @@
 gpu_*.err
 gpu_*.out
 
-models
 data
-models
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
