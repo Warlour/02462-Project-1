@@ -1,5 +1,5 @@
-gpu_22848840.err
-gpu_22848840.out
+gpu_*.err
+gpu_*.out
 
 models
 data

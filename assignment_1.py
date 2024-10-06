@@ -44,6 +44,7 @@ def slugify(value, allow_unicode=False):
 
 
 import os
+import gc
 import torch
 import PIL
 from torch import nn
@@ -82,6 +83,8 @@ def seed_everything(seed: int):
 
 # Set a seed with a random integer, in this case, I choose my verymost favourite sequence of numbers
 seed_everything(sum([115, 107, 105, 98, 105, 100, 105, 32, 116, 111, 105, 108, 101, 116]))
+
+torch.cuda.empty_cache()
 
 
 # In[68]:
@@ -234,12 +237,10 @@ def collate_fn(batch):
 # - Epochs: 74
 # 
 # 
-# NOTE: I tried this, and could not, for the life of me learn anything. Attempt this task at your peril
-# 
 # **3.** 
 # - **Can you make the VGG16-D model overfit to the imagenette dataset? If not, what about another dataset?**
 #     - Remove dropout layers
-#     - Increase amount of epochs
+#     - Increase amount of epochs with a low batch size.
 # - **Can you change the amount of dropout to increase or decrease the rate of overfitting?**
 #     - Yes, if you increase dropout layers you decrease overfitting, by minimizing the amount of weight that's put on to a single neuron.
 # - **Can you make the smaller model overfit to any of its datasets? Is it harder or easier? Explain your answer**
@@ -258,11 +259,10 @@ def collate_fn(batch):
 
 
 # Get data
-dataset_name = 'imagenette'
-train_set, validation_set, test_set = get_dataset(dataset_name, validation_size=0.1)
+train_set, validation_set, test_set = get_dataset('imagenette', validation_size=0.1)
 
 # Make dataloaders
-batch_size=256 # Dramatically increases training time
+batch_size=64 # Dramatically increases training time
 train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 validation_dataloader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
@@ -283,7 +283,7 @@ class VGG16D(torch.nn.Module):
         dropout_probs = 0.5
         optim_momentum = 0.9
         weight_decay = 5*10**(-4)
-        learning_rate = 0.01 # Initially set to 0.01 but then set to 0.001 and then 0.0001
+        learning_rate = 0.01 # Initially set to 0.01 but then decreased by $\times 0.1$ for every plateau
 
         # Define features and classifier each individually, this is how the VGG16-D model is originally defined
         self.features = torch.nn.Sequential(
@@ -379,7 +379,7 @@ class VGG16D(torch.nn.Module):
                 loss.backward()
 
                 self.optim.step()
-                self.optim.zero_grad()
+                self.optim.zero_grad(set_to_none=True)
 
                 # Keep track of training accuracy
                 epoch_acc += (torch.argmax(logits, dim=1) == targets).sum().item()
@@ -627,7 +627,7 @@ def get_vgg_weights(model):
 CNN_model = VGG16D(num_classes=10, in_channels=3, features_fore_linear=512*7*7, dataset=test_set)
 # CNN_model = VGG16S(num_classes=10, in_channels=3, features_fore_linear=193600, dataset=test_set)
 
-train_epochs = 5
+train_epochs = 20
 train_accs, test_accs = CNN_model.train_model(train_dataloader, epochs=train_epochs,  val_dataloader=test_dataloader)
 
 
@@ -650,5 +650,10 @@ plt.savefig(filename+'.pdf')
 # In[ ]:
 
 
-torch.save(CNN_model.state_dict(), filename+'.pt')
+torch.save(CNN_model, filename+'.pt')
+
+# Clean up to free memory
+torch.cuda.empty_cache()
+del train_set, validation_set, test_set, train_dataloader, validation_dataloader, test_dataloader, CNN_model
+gc.collect()
 
