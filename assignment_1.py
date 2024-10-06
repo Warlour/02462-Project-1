@@ -283,7 +283,7 @@ class VGG16D(torch.nn.Module):
         dropout_probs = 0.5
         optim_momentum = 0.9
         weight_decay = 5*10**(-4)
-        learning_rate = 0.01 # Initially set to 0.01 but then decreased by $\times 0.1$ for every plateau
+        learning_rate = 0.0001 # Initially set to 0.01 but then decreased by $\times 0.1$ for every plateau
 
         # Define features and classifier each individually, this is how the VGG16-D model is originally defined
         self.features = torch.nn.Sequential(
@@ -347,13 +347,13 @@ class VGG16D(torch.nn.Module):
         self.criterion = nn.CrossEntropyLoss()
 
         # Optimizer - For now just set to Adam to test the implementation
-        # self.optim = torch.optim.Adam(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate)
-        self.optim = torch.optim.SGD(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate, momentum=optim_momentum, weight_decay=weight_decay)
+        self.optim = torch.optim.Adam(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate)
+        # self.optim = torch.optim.SGD(list(self.features.parameters()) + list(self.classifier.parameters()), lr=learning_rate, momentum=optim_momentum, weight_decay=weight_decay)
 
         # Learning rate scheduler for improved convergence
         # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size=10, gamma=0.1)
         # Use a scheduler like VGG16
-        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optim, mode='max', factor=0.1, patience=5, verbose=True)
+        # self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optim, mode='max', factor=0.1, patience=5, verbose=True)
 
         self.dataset = dataset
 
