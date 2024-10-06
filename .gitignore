@@ -1,3 +1,6 @@
+gpu_*.err
+gpu_*.out
+
 data
 
 # Byte-compiled / optimized / DLL files
