@@ -164,23 +164,36 @@ def collate_fn(batch):
 # **1. What is the reason we add MaxPooling or AveragePooling in CNN's?**
 # 
 
+# Pooling reduces the spatial dimensions (width and height) of the input feature maps, which leads to fewer parameters and less computational overhead in the network. This reduction helps in controlling overfitting and makes the model more efficient by compressing the representation.
 # 
+# Max Pooling: Selects the maximum value from each patch of the input feature map. This helps in highlighting the most important (strongest) features in the feature map.
+# 
+# Average Pooling: Computes the average value of each patch in the input feature map. This approach smooths the output and captures the overall average activation in each region.
+
+# <img src="Images/pooling.png" alt="Example Image" width="300"/>
 
 # **\*2. Say a network comes with a list of class probabilities:** $\hat{p}_1, \hat{p}_2, \dots \hat{p}_N$ **when is the cross-entropy in regards to the *true* class probabilities:** $p_1, p_2, \dots p_N$ **maximized?**
 
+# Cross-entropy is a loss function commonly used in classification tasks to measure the difference between two probability distributions: the true distribution and the predicted distribution. The goal of the learning algorithm is to minimize this difference, making the predicted probabilities as close as possible to the true ones.
+# 
+# In the worst-case scenario, the maximum cross-entropy occurs when the predicted distribution is as far away as possible from the true distribution. 
+# 
+# Mathematically, the cross-entropy between a true probability distribution $p$ and a predicted distribution  $\hat{p}$  is maximized when the true class has  $p_{i} = 1$ (i.e., the correct class), and the predicted probability for that class $\hat{p}_{i} = 0$. That is, when the network is completely confident in the wrong class.
 # 
 
 # **3. In the [VGG paper](https://arxiv.org/pdf/1409.1556), last paragraph of 'training', page 4, they mention images being randomly cropped after being rescaled. Why do you think they crop images only *after* rescaling them?**
 
+# Rescaling the images to a range of sizes (in the second approach) ensures that the network can recognize objects at multiple scales. Since objects can appear in different sizes in real-world images, this allows the model to be more robust and adaptable to variations in object size.
 # 
+# After rescaling, random cropping is applied to get the final input size (e.g., 224x224). This firstly serves to prevent  distortion of the objects within the image, and secondly, random cropping introduces variability into the training data, effectively increasing the diversity of the training set. This prevents the model from overfitting to specific object locations within the images.
 
 # **4. After this, they mention "further augmenting the dataset" by random horizontal flipping and random RGB color shift. Why do you think they do this?**
 
-# 
+# The random horizontal flipping helps the model generalize to images with a wider range of orientations, and similarly the RGB color shift trains the model to adapt to different lighting conditions and colors, forcing the weights to prioritize more robust classification features, like shape, texture, and structure.
 
 # **\*5. Why do you think they do not randomly translate images? (Translate being to move images left, right, up, down)**
 
-# 
+# Random translations are not very effective in this context because convolutional layers inherently provide a degree of translation invariance. This is due to the nature of convolution, where the same kernel slides across the image and detects patterns regardless of their exact location.
 
 # **6. Which of the following classification tasks do you think is more difficult for a machine learning model, and why?**
 # 
@@ -188,21 +201,35 @@ def collate_fn(batch):
 # - **Telling dogs from cats**
 # - **Telling horses from cars from totem poles from chainsaws**
 
+# We believe telling German shepherds from Labradors is the most difficult tasks among the above, because the features for both classes will be more similar and thus have a greater overlap, making it harder to correctly classify. E.g. the shape of German Shepherds is more similar to Labradors than Dogs are to Cats.
 # 
 
 # **7. In real life, you often find that neural networks aren't used "for everything", older and often more simple models like random forest and linear regression still dominate a lot of fields.**
 # 
 # - **Reason a bit about why this is the case**
 
+# **In terms of reliability:** Using NN (Neural Network) depends on specific settings, meaning a large amount of data is required to build an effective model. In contrast, simpler models can capture trends without needing the complexity of a NN. Interestingly, with NN, you can completely misinterpret the underlying problem but still create an effective model with a large amount of data. Additionally, understanding a problem will always make it easier to implement a much simpler solution. Neural networks are also very sensitive to noise, whereas simpler models are typically more robust against such noise. 
 # 
+# **Resources:** When the large amount of data isn't available, you have to gather it yourself, this can be very pricy, whereas it's easier to build a simple model. Training a good model can also require significant computational resources, but when you can't borrow such powerful machinery, the cost is very high for something you probably only use for one project.
 
 # **\*8. When we sample from our dataloader, we sample in batches, why is this? What would be the alternatives to sampling in batches, and what impact would that have?**
 
+# When training a neural network, we pass the data through the network multiple times to adjust the weights, and a full pass through the training data is called an epoch. However, when the dataset is too large to fit into memory at once, we divide the data into smaller subsets called batches. The batch size represents the number of training samples in each subset (or batch) processed at a time.
+# 
+# If we don’t use batches, there are two alternatives: processing the data either one sample at a time (Stochastic Gradient Descent) or using the entire dataset in a single update (Full Batch Gradient Descent). Here’s what would happen in each case:
+# 
+# **Stochastic Gradient Descent:**
+# 
+# If we pass one sample at a time through the network (i.e., use a batch size of 1), the model’s weights will be updated after each individual data point. This leads to highly variable gradient updates, which may cause the model’s loss to fluctuate greatly and converge more slowly.
+# 
+# **Full Batch Gradient Descent:**
+# 
+# If we try to feed the entire dataset into the network at once, especially with very large datasets, the large context window would likely use in excess of the available memory (either CPU or GPU). This could cause out-of-memory errors or severely limit the size of datasets we can use for training.
 # 
 
 # **9. The VGG16-D conv layers all use the same kernel size. Come up with reasons for why you would use bigger/smaller kernel sizes**
 
-# 
+# The selection of a kernel size depends on the goal in mind. In example, if you want to create an object detection model and you want to capture a car in whole as an object, you would generally use a larger kernel size, but if you wanted to capture the components of the car, you would use a smaller kernel size to e.g. capture the mirror or the wheels' features.
 
 # **\*10. The "new kid on the block' (relatively speaking) in NLP (Natural Language processing), is self-attention. Basically this is letting each word/token relate to each other word/token by a specific 'attention' value, vaguely showing how much they relate to one another.**
 # 
@@ -234,8 +261,13 @@ def collate_fn(batch):
 # - **$L_2$ Penalty Multiplier: $5\times 10^{-4}$**
 # - Dropout ratio: $0.5$
 # - **Learning rate: $10^{-2}$, but decreased by a factor of 10 everytime the validation set accuracy stopped improving (done 3 times in the original VGG16).**
-# - Epochs: 74
+# - Epochs: 74 (We set ours to 20)  
 # 
+# 
+# We did this by using SGD, but our accuracy was terrible at a 10%, and overfitting highly increased, although, we didn't implement the $L_2$ Penalty Multiplier. so we lowered our Batch size to 64 (mostly due to memory issues - even on HPC with 40 GB VRAM, but this could be due to others using parts of the GPU). We also changed back to Adam optimizer, since this would save us time from manually adjusting momentum and weight decay. Lastly, we decreased the learning rate to $10^{-4}$, and while we tested with the scheduler: "ReduceLROnPlateau", meant to mimic the learning rate factor decrease, we didn't see any improvement in accuracy.
+# ![Optimizer settings](models/settings.png "Optimizer settings")
+# 
+# As seen on the plot, the amount of accuracy data points is significantly reduced with their settings, due to the high batch size of 256 yielding around 4 data points per epoch. However, if we wanted more datapoints, we could use the original dataset "ImageNet", which contains a 100 times more classes, with around 1000 images per class (like Imagenette).
 # 
 # **3.** 
 # - **Can you make the VGG16-D model overfit to the imagenette dataset? If not, what about another dataset?**
@@ -262,7 +294,7 @@ def collate_fn(batch):
 train_set, validation_set, test_set = get_dataset('imagenette', validation_size=0.1)
 
 # Make dataloaders
-batch_size=64 # Dramatically increases training time
+batch_size=128 # Dramatically increases training time
 train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 validation_dataloader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
