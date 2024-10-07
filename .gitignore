@@ -1,5 +1,6 @@
 gpu_*.err
 gpu_*.out
+models/*.pt
 
 data
 

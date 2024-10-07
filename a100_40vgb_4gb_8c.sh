@@ -9,7 +9,7 @@
 ### -- Select the resources: 1 gpu in exclusive process mode --
 #BSUB -gpu "num=1:mode=exclusive_process"
 ### -- set walltime limit: hh:mm --  maximum 24 hours for GPU-queues right now
-#BSUB -W 4:00
+#BSUB -W 2:00
 # request 5GB of system-memory
 #BSUB -R "rusage[mem=4GB]"
 #BSUB -R "select[gpu40gb]"
@@ -32,4 +32,4 @@ nvidia-smi
 module load cuda/12.4.1
 
 # /appl/cuda/12.4.1/samples/bin/x86_64/linux/release/deviceQuery
-/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/assignment_1.py
+/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/20epoch_128batchsize.py
