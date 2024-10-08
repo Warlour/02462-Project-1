@@ -1,0 +1,100 @@
+Mon Oct  7 19:43:37 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-PCIE-40GB          On  |   00000000:86:00.0 Off |                    0 |
+| N/A   28C    P0             56W /  250W |       1MiB /  40960MiB |      0%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+cuda
+There are 9469 examples in the training set
+There are 3532 examples in the test set 
+
+Image shape is: torch.Size([3, 224, 224]), label example is 0
+Epoch 0 validation accuracy: 0.18516421291053228
+Epoch 1 validation accuracy: 0.25254813137032844
+Epoch 2 validation accuracy: 0.3595696489241223
+Epoch 3 validation accuracy: 0.4479048697621744
+Epoch 4 validation accuracy: 0.5370894677236693
+Epoch 5 validation accuracy: 0.5580407701019252
+Epoch 6 validation accuracy: 0.613533408833522
+Epoch 7 validation accuracy: 0.5968289920724802
+Epoch 8 validation accuracy: 0.6438278595696489
+Epoch 9 validation accuracy: 0.6619479048697622
+Epoch 10 validation accuracy: 0.6945073612684032
+Epoch 11 validation accuracy: 0.6868629671574179
+Epoch 12 validation accuracy: 0.7188561721404304
+Epoch 13 validation accuracy: 0.7216874292185731
+Epoch 14 validation accuracy: 0.727916194790487
+Epoch 15 validation accuracy: 0.7307474518686297
+Epoch 16 validation accuracy: 0.7216874292185731
+Epoch 17 validation accuracy: 0.7432049830124575
+Epoch 18 validation accuracy: 0.7338618346545867
+Epoch 19 validation accuracy: 0.7480181200453001
+Epoch 20 validation accuracy: 0.7477349943374858
+Epoch 21 validation accuracy: 0.7522650056625142
+Epoch 22 validation accuracy: 0.7652887882219706
+Epoch 23 validation accuracy: 0.7771800679501699
+Epoch 24 validation accuracy: 0.7522650056625142
+Epoch 25 validation accuracy: 0.7644394110985278
+Epoch 26 validation accuracy: 0.7729331823329558
+Epoch 27 validation accuracy: 0.7757644394110985
+Epoch 28 validation accuracy: 0.7703850509626274
+Epoch 29 validation accuracy: 0.7624575311438279
+Epoch 30 validation accuracy: 0.77519818799547
+Epoch 31 validation accuracy: 0.7771800679501699
+Epoch 32 validation accuracy: 0.772083805209513
+Epoch 33 validation accuracy: 0.7684031710079275
+Epoch 34 validation accuracy: 0.7791619479048698
+Epoch 35 validation accuracy: 0.7839750849377124
+Epoch 36 validation accuracy: 0.7859569648924122
+Epoch 37 validation accuracy: 0.7746319365798414
+Epoch 38 validation accuracy: 0.7904869762174406
+Epoch 39 validation accuracy: 0.7933182332955833
+Epoch 40 validation accuracy: 0.779445073612684
+Epoch 41 validation accuracy: 0.7842582106455266
+Epoch 42 validation accuracy: 0.7800113250283126
+Epoch 43 validation accuracy: 0.7817100792751982
+Epoch 44 validation accuracy: 0.7851075877689694
+Epoch 45 validation accuracy: 0.7746319365798414
+Epoch 46 validation accuracy: 0.7808607021517554
+Epoch 47 validation accuracy: 0.7805775764439411
+Epoch 48 validation accuracy: 0.7941676104190261
+Epoch 49 validation accuracy: 0.7746319365798414
+Epoch 50 validation accuracy: 0.7862400906002265
+Epoch 51 validation accuracy: 0.7845413363533409
+Epoch 52 validation accuracy: 0.7919026047565119
+Epoch 53 validation accuracy: 0.7814269535673839
+Epoch 54 validation accuracy: 0.7746319365798414
+Epoch 55 validation accuracy: 0.7870894677236693
+Epoch 56 validation accuracy: 0.7876557191392979
+Epoch 57 validation accuracy: 0.7885050962627407
+Epoch 58 validation accuracy: 0.8023782559456398
+Epoch 59 validation accuracy: 0.7870894677236693
+Epoch 60 validation accuracy: 0.7817100792751982
+Epoch 61 validation accuracy: 0.7978482446206115
+Epoch 62 validation accuracy: 0.7936013590033975
+Epoch 63 validation accuracy: 0.7836919592298981
+Epoch 64 validation accuracy: 0.7873725934314836
+Epoch 65 validation accuracy: 0.793035107587769
+Epoch 66 validation accuracy: 0.8001132502831257
+Epoch 67 validation accuracy: 0.7890713476783692
+Epoch 68 validation accuracy: 0.7907701019252548
+Epoch 69 validation accuracy: 0.7944507361268404
+Epoch 70 validation accuracy: 0.7814269535673839
+Epoch 71 validation accuracy: 0.7936013590033975
+Epoch 72 validation accuracy: 0.7862400906002265
+Epoch 73 validation accuracy: 0.7873725934314836
+Epoch 74 validation accuracy: 0.7834088335220838
