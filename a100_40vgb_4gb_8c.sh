@@ -3,13 +3,13 @@
 ### –- specify queue --
 #BSUB -q gpua100
 ### -- set the job Name --
-#BSUB -J cnntrain
+#BSUB -J 75epoch_64batchsize_batchnorm
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 8
 ### -- Select the resources: 1 gpu in exclusive process mode --
 #BSUB -gpu "num=1:mode=exclusive_process"
 ### -- set walltime limit: hh:mm --  maximum 24 hours for GPU-queues right now
-#BSUB -W 2:00
+#BSUB -W 3:00
 # request 5GB of system-memory
 #BSUB -R "rusage[mem=4GB]"
 #BSUB -R "select[gpu40gb]"
@@ -32,4 +32,4 @@ nvidia-smi
 module load cuda/12.4.1
 
 # /appl/cuda/12.4.1/samples/bin/x86_64/linux/release/deviceQuery
-/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/75epoch_64batchsize.py
+/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/75epoch_64batchsize_batchnorm.py
