@@ -32,4 +32,4 @@ nvidia-smi
 module load cuda/12.4.1
 
 # /appl/cuda/12.4.1/samples/bin/x86_64/linux/release/deviceQuery
-/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/20epoch_128batchsize.py
+/zhome/96/d/205311/02462-Project-1/.venv/bin/python /zhome/96/d/205311/02462-Project-1/75epoch_64batchsize.py
