@@ -424,7 +424,7 @@ class VGG16D(torch.nn.Module):
     def forward(self, x):
         return self.classifier(self.features(x))
 
-    def train_model(self, train_dataloader, epochs=1, val_dataloader=None, early_stopping_patience=5):
+    def train_model(self, train_dataloader, epochs=1, val_dataloader=None, early_stopping_patience=15):
         
         # Call .train() on self to turn on dropout
         self.train()
